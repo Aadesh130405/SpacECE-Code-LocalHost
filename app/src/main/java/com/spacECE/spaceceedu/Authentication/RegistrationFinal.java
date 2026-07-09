@@ -204,122 +204,227 @@ public class RegistrationFinal extends AppCompatActivity {
         return byteArrayOutputStream.toByteArray();
     }
 
-    private void sendUserRegistration(String name, String email, String password, String phone, Uri image) {
-        String register = "https://hustle-7c68d043.mileswebhosting.com/spacece/spacece_auth/register_action.php";
+//    private void sendUserRegistration(String name, String email, String password, String phone, Uri image) {
+//        String register = "https://hustle-7c68d043.mileswebhosting.com/spacece/spacece_auth/register_action.php";
+//        String register = "https://spaceceindiafoundation.infinityfreeapp.com/spacece_auth/register_action.php";
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                byte[] encodedImage = null;
+//                if (image != null) {
+//                    try {
+//                        Bitmap selectedImage = getBitmapFromUri(image);
+//                        encodedImage = encodeBase64(selectedImage);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//                OkHttpClient client = UsefulFunctions.getOkHttpClient();
+//                MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM)
+//                        .addFormDataPart("name", name)
+//                        .addFormDataPart("email", email)
+//                        .addFormDataPart("password", password)
+//                        .addFormDataPart("phone", phone);
+//
+//                if (encodedImage != null) {
+//                    builder.addFormDataPart("image", name + ".jpg",
+//                            RequestBody.create(encodedImage, MediaType.parse("image/jpeg")));
+//                }
+//
+//                if (TYPE != null && TYPE.equalsIgnoreCase("consultant")) {
+//                    builder.addFormDataPart("type", "consultant")
+//                            .addFormDataPart("c_categories", TYPE)
+//                            .addFormDataPart("c_office", ADDRESS != null ? ADDRESS : "")
+//                            .addFormDataPart("c_from_time", START_TIME != null ? START_TIME : "")
+//                            .addFormDataPart("c_to_time", END_TIME != null ? END_TIME : "")
+//                            .addFormDataPart("c_language", LANGUAGE != null ? LANGUAGE : "")
+//                            .addFormDataPart("c_fee", FEE != null ? FEE : "")
+//                            .addFormDataPart("c_available_from", "Monday")
+//                            .addFormDataPart("c_available_to", "Tuesday")
+//                            .addFormDataPart("c_qualification", QUALIFICATION != null ? QUALIFICATION : "");
+//                } else {
+//                    builder.addFormDataPart("type", "customer");
+//                }
+//
+//                Request request = new Request.Builder()
+//                        .url(register)
+//                        .post(builder.build())
+//                        .build();
+//                Request request = new Request.Builder()
+//                        .url(register)
+//                        .post(builder.build())
+//                        .addHeader("Accept", "application/json")
+//                        .addHeader("X-Requested-With", "XMLHttpRequest")
+//                        .addHeader("User-Agent", "Mozilla/5.0")
+//                        //.addHeader("Content-Type", "application/x-www-form-urlencoded")
+//                        .build();
+//
+//                client.newCall(request).enqueue(new Callback() {
+//                    @Override
+//                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+//                        Log.e("Registration", "Error: " + e.getMessage());
+//                        runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Network error: " + e.getMessage(), Toast.LENGTH_LONG).show());
+//                    }
+//
+//                    @Override
+//                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+//                        final String responseData = response.body() != null ? response.body().string() : null;
+//                        runOnUiThread(() -> {
+//                            try {
+//                                if (responseData == null || !response.isSuccessful()) {
+//                                    Toast.makeText(getApplicationContext(), "Server error: " + response.code(), Toast.LENGTH_SHORT).show();
+//                                    return;
+//                                }
+//                                Log.d("Registration", "Response: " + responseData);
+//
+//                                // Clean the response string if it contains HTML or extra spaces
+//                                String cleanJson = responseData.trim();
+//
+//                                // Find the first { and last } to extract JSON even if there's surrounding garbage
+//                                int jsonStart = cleanJson.indexOf("{");
+//                                int jsonEnd = cleanJson.lastIndexOf("}");
+//                                if (jsonStart != -1 && jsonEnd != -1 && jsonEnd > jsonStart) {
+//                                    cleanJson = cleanJson.substring(jsonStart, jsonEnd + 1);
+//                                }
+//
+//                                if (!cleanJson.startsWith("{")) {
+//                                    Toast.makeText(getApplicationContext(), "Server error: Invalid response format", Toast.LENGTH_SHORT).show();
+//                                    return;
+//                                }
+//
+//                                JSONObject jsonObject = new JSONObject(cleanJson);
+//
+//                                if (jsonObject.optString("status").equals("error")) {
+//                                    if (jsonObject.optString("message").equals("Email already exists!")) {
+//                                        ev_email.setError("Email already exist!");
+//                                    } else {
+//                                        Toast.makeText(getApplicationContext(), jsonObject.optString("message", "Registration failed"), Toast.LENGTH_SHORT).show();
+//                                    }
+//                                } else if (jsonObject.optString("status").equals("success")) {
+//                                    Toast.makeText(getApplicationContext(), "Registration successful!", Toast.LENGTH_SHORT).show();
+//
+//                                    // Save user data locally so header doesn't show "Hello null"
+//                                    JSONObject data = jsonObject.optJSONObject("data");
+//                                    String userId = (data != null) ? data.optString("current_user_id", "") : "";
+//                                    String userName = (data != null) ? data.optString("current_user_name", name) : name;
+//                                    Account account = new Account(userId, userName, phone, TYPE.equalsIgnoreCase("consultant"), "");
+//                                    userLocalStore.setUserLoggedIn(true, account);
+//                                    MainActivity.ACCOUNT = account;
+//
+//                                    // Redirect to MainActivity after successful registration
+//                                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+//                                    mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                                    startActivity(mainIntent);
+//                                    finish();
+//                                }
+//                            } catch (JSONException e) {
+//                                Log.e("Registration", "JSON Error: " + e.getMessage() + " Response: " + responseData);
+//                                Toast.makeText(getApplicationContext(), "Error parsing response: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                            }
+//                        });
+//                    }
+//                });
+//            }
+//        }).start();
+//    }
+private void sendUserRegistration(String name, String email, String password, String phone, Uri image) {
+    String register = "https://spaceceindiafoundation.infinityfreeapp.com/spacece_auth/register_action.php?i=1";
 
-        new Thread(new Runnable() {
+    new Thread(() -> {
+
+        // ADD THIS - warm up cookie first
+        UsefulFunctions.warmUpCookie("https://spaceceindiafoundation.infinityfreeapp.com/spacece_auth/register_action.php");
+
+        RequestBody formBody = new FormBody.Builder()
+                .add("name", name)
+                .add("email", email)
+                .add("password", password)
+                .add("phone", phone)
+                .add("type", TYPE != null ? TYPE : "customer")
+                .add("isAPI", "true")
+                .build();
+
+        Request request = new Request.Builder()
+                .url(register)
+                .post(formBody)
+                .addHeader("Accept", "application/json")
+                .addHeader("X-Requested-With", "XMLHttpRequest")
+                .addHeader("User-Agent", "Mozilla/5.0")
+                .build();
+
+        OkHttpClient client = UsefulFunctions.getOkHttpClient();
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void run() {
-                byte[] encodedImage = null;
-                if (image != null) {
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                Log.e("Registration", "Error: " + e.getMessage());
+                runOnUiThread(() -> Toast.makeText(getApplicationContext(),
+                        "Network error: " + e.getMessage(), Toast.LENGTH_LONG).show());
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                final String responseData = response.body() != null ? response.body().string() : null;
+
+                // Keep debug logs until confirmed working
+                Log.d("REG_DEBUG", "Response Code: " + response.code());
+                Log.d("REG_DEBUG", "Raw Response: " + responseData);
+
+                runOnUiThread(() -> {
                     try {
-                        Bitmap selectedImage = getBitmapFromUri(image);
-                        encodedImage = encodeBase64(selectedImage);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
+                        if (responseData == null || !response.isSuccessful()) {
+                            Toast.makeText(getApplicationContext(),
+                                    "Server error: " + response.code(), Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
-                OkHttpClient client = UsefulFunctions.getOkHttpClient();
-                MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM)
-                        .addFormDataPart("name", name)
-                        .addFormDataPart("email", email)
-                        .addFormDataPart("password", password)
-                        .addFormDataPart("phone", phone);
+                        String cleanJson = UsefulFunctions.cleanJsonResponse(responseData);
 
-                if (encodedImage != null) {
-                    builder.addFormDataPart("image", name + ".jpg",
-                            RequestBody.create(encodedImage, MediaType.parse("image/jpeg")));
-                }
+                        if (cleanJson == null || !cleanJson.startsWith("{")) {
+                            Toast.makeText(getApplicationContext(),
+                                    "Invalid server response", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
-                if (TYPE != null && TYPE.equalsIgnoreCase("consultant")) {
-                    builder.addFormDataPart("type", "consultant")
-                            .addFormDataPart("c_categories", TYPE)
-                            .addFormDataPart("c_office", ADDRESS != null ? ADDRESS : "")
-                            .addFormDataPart("c_from_time", START_TIME != null ? START_TIME : "")
-                            .addFormDataPart("c_to_time", END_TIME != null ? END_TIME : "")
-                            .addFormDataPart("c_language", LANGUAGE != null ? LANGUAGE : "")
-                            .addFormDataPart("c_fee", FEE != null ? FEE : "")
-                            .addFormDataPart("c_available_from", "Monday")
-                            .addFormDataPart("c_available_to", "Tuesday")
-                            .addFormDataPart("c_qualification", QUALIFICATION != null ? QUALIFICATION : "");
-                } else {
-                    builder.addFormDataPart("type", "customer");
-                }
+                        JSONObject jsonObject = new JSONObject(cleanJson);
 
-                Request request = new Request.Builder()
-                        .url(register)
-                        .post(builder.build())
-                        .build();
-
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        Log.e("Registration", "Error: " + e.getMessage());
-                        runOnUiThread(() -> Toast.makeText(getApplicationContext(), "Network error: " + e.getMessage(), Toast.LENGTH_LONG).show());
-                    }
-
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        final String responseData = response.body() != null ? response.body().string() : null;
-                        runOnUiThread(() -> {
-                            try {
-                                if (responseData == null || !response.isSuccessful()) {
-                                    Toast.makeText(getApplicationContext(), "Server error: " + response.code(), Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                                Log.d("Registration", "Response: " + responseData);
-                                
-                                // Clean the response string if it contains HTML or extra spaces
-                                String cleanJson = responseData.trim();
-                                
-                                // Find the first { and last } to extract JSON even if there's surrounding garbage
-                                int jsonStart = cleanJson.indexOf("{");
-                                int jsonEnd = cleanJson.lastIndexOf("}");
-                                if (jsonStart != -1 && jsonEnd != -1 && jsonEnd > jsonStart) {
-                                    cleanJson = cleanJson.substring(jsonStart, jsonEnd + 1);
-                                }
-
-                                if (!cleanJson.startsWith("{")) {
-                                    Toast.makeText(getApplicationContext(), "Server error: Invalid response format", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                                
-                                JSONObject jsonObject = new JSONObject(cleanJson);
-
-                                if (jsonObject.optString("status").equals("error")) {
-                                    if (jsonObject.optString("message").equals("Email already exists!")) {
-                                        ev_email.setError("Email already exist!");
-                                    } else {
-                                        Toast.makeText(getApplicationContext(), jsonObject.optString("message", "Registration failed"), Toast.LENGTH_SHORT).show();
-                                    }
-                                } else if (jsonObject.optString("status").equals("success")) {
-                                    Toast.makeText(getApplicationContext(), "Registration successful!", Toast.LENGTH_SHORT).show();
-
-                                    // Save user data locally so header doesn't show "Hello null"
-                                    JSONObject data = jsonObject.optJSONObject("data");
-                                    String userId = (data != null) ? data.optString("current_user_id", "") : "";
-                                    String userName = (data != null) ? data.optString("current_user_name", name) : name;
-                                    Account account = new Account(userId, userName, phone, TYPE.equalsIgnoreCase("consultant"), "");
-                                    userLocalStore.setUserLoggedIn(true, account);
-                                    MainActivity.ACCOUNT = account;
-
-                                    // Redirect to MainActivity after successful registration
-                                    Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
-                                    mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(mainIntent);
-                                    finish();
-                                }
-                            } catch (JSONException e) {
-                                Log.e("Registration", "JSON Error: " + e.getMessage() + " Response: " + responseData);
-                                Toast.makeText(getApplicationContext(), "Error parsing response: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        if (jsonObject.optString("status").equals("error")) {
+                            if (jsonObject.optString("message").equals("Email already exists!")) {
+                                ev_email.setError("Email already exists!");
+                            } else {
+                                Toast.makeText(getApplicationContext(),
+                                        jsonObject.optString("message", "Registration failed"),
+                                        Toast.LENGTH_SHORT).show();
                             }
-                        });
+                        } else if (jsonObject.optString("status").equals("success")) {
+                            Toast.makeText(getApplicationContext(),
+                                    "Registration successful!", Toast.LENGTH_SHORT).show();
+
+                            JSONObject data = jsonObject.optJSONObject("data");
+                            String userId = (data != null) ? data.optString("current_user_id", "") : "";
+                            String userName = (data != null) ? data.optString("current_user_name", name) : name;
+                            Account account = new Account(userId, userName, phone,
+                                    TYPE != null && TYPE.equalsIgnoreCase("consultant"), "");
+                            userLocalStore.setUserLoggedIn(true, account);
+                            MainActivity.ACCOUNT = account;
+
+                            Intent mainIntent = new Intent(getApplicationContext(), MainActivity.class);
+                            mainIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(mainIntent);
+                            finish();
+                        }
+                    } catch (JSONException e) {
+                        Log.e("Registration", "JSON Error: " + e.getMessage() + " | Response: " + responseData);
+                        Toast.makeText(getApplicationContext(),
+                                "Error parsing response", Toast.LENGTH_SHORT).show();
                     }
                 });
             }
-        }).start();
-    }
+        });
+    }).start();
+}
+
 
     private boolean validateData() {
         boolean vName = validateName();

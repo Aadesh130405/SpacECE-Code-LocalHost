@@ -237,7 +237,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
-                JSONObject apiCall = UsefulFunctions.UsingGetAPI("https://hustle-7c68d043.mileswebhosting.com/spacece/api/spaceactive_activities.php?ano=1");
+//                JSONObject apiCall = UsefulFunctions.UsingGetAPI("https://hustle-7c68d043.mileswebhosting.com/spacece/api/spaceactive_activities.php?ano=1");
+                JSONObject apiCall = UsefulFunctions.UsingGetAPI("https://spaceceindiafoundation.infinityfreeapp.com/api/spaceactive_activities.php?ano=1");
                 if (apiCall != null) {
                     Gson gson = new GsonBuilder().create();
                     ActivityData activityData = gson.fromJson(apiCall.toString(), ActivityData.class);
@@ -259,7 +260,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void sendTokenToServer(String token) {
         if (ACCOUNT != null) {
-            new Thread(() -> UsefulFunctions.UsingGetAPI("https://hustle-7c68d043.mileswebhosting.com/ConsultUs/api_token?email=" + ACCOUNT.getAccount_id() + "&token=" + token)).start();
+//            new Thread(() -> UsefulFunctions.UsingGetAPI("https://hustle-7c68d043.mileswebhosting.com/ConsultUs/api_token?email=" + ACCOUNT.getAccount_id() + "&token=" + token)).start();
+            new Thread(() -> UsefulFunctions.UsingGetAPI("https://spaceceindiafoundation.infinityfreeapp.com/ConsultUs/api_token?email=" + ACCOUNT.getAccount_id() + "&token=" + token)).start();
         }
     }
 

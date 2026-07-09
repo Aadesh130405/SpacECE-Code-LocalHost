@@ -5,6 +5,8 @@ import android.util.Log;
 import okhttp3.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -16,17 +18,52 @@ public class UsefulFunctions {
 
     private static OkHttpClient client;
 
-    public static synchronized OkHttpClient getOkHttpClient() {
-        if (client == null) {
-            client = new OkHttpClient.Builder()
-                    .connectTimeout(15, TimeUnit.SECONDS)
-                    .readTimeout(15, TimeUnit.SECONDS)
-                    .writeTimeout(15, TimeUnit.SECONDS)
-                    .retryOnConnectionFailure(true)
-                    .build();
-        }
-        return client;
+//    public static synchronized OkHttpClient getOkHttpClient() {
+//        if (client == null) {
+//            client = new OkHttpClient.Builder()
+//                    .connectTimeout(15, TimeUnit.SECONDS)
+//                    .readTimeout(15, TimeUnit.SECONDS)
+//                    .writeTimeout(15, TimeUnit.SECONDS)
+//                    .retryOnConnectionFailure(true)
+//                    .build();
+//        }
+//        return client;
+//    }
+public static void warmUpCookie(String baseUrl) {
+    try {
+        Request warmUp = new Request.Builder()
+                .url(baseUrl)
+                .addHeader("Accept", "text/html")
+                .addHeader("User-Agent", "Mozilla/5.0")
+                .build();
+        Response r = getOkHttpClient().newCall(warmUp).execute();
+        if (r.body() != null) r.body().close();
+    } catch (Exception e) {
+        Log.e("UsefulFunctions", "Warmup error: " + e.getMessage());
     }
+}
+public static synchronized OkHttpClient getOkHttpClient() {
+    if (client == null) {
+        client = new OkHttpClient.Builder()
+                .connectTimeout(15, TimeUnit.SECONDS)
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true)
+                .cookieJar(new CookieJar() {
+                    private final List<Cookie> cookieStore = new ArrayList<>();
+                    @Override
+                    public void saveFromResponse(HttpUrl url, List<Cookie> cookies) {
+                        cookieStore.addAll(cookies);
+                    }
+                    @Override
+                    public List<Cookie> loadForRequest(HttpUrl url) {
+                        return cookieStore;
+                    }
+                })
+                .build();
+    }
+    return client;
+}
 
     public static String cleanJsonResponse(String response) {
         if (response == null) return null;
@@ -46,17 +83,28 @@ public class UsefulFunctions {
         
         // Normalize URL to use the working domain and https
         String finalUrl = inputURL;
+//        if (inputURL.contains("educationfoundation.space") || inputURL.contains("spacefoundation.in")) {
+//            finalUrl = inputURL.replace("http://educationfoundation.space", "https://hustle-7c68d043.mileswebhosting.com")
+//                               .replace("http://spacefoundation.in", "https://hustle-7c68d043.mileswebhosting.com")
+//                               .replace("http://", "https://");
+//        }
         if (inputURL.contains("educationfoundation.space") || inputURL.contains("spacefoundation.in")) {
-            finalUrl = inputURL.replace("http://educationfoundation.space", "https://hustle-7c68d043.mileswebhosting.com")
-                               .replace("http://spacefoundation.in", "https://hustle-7c68d043.mileswebhosting.com")
-                               .replace("http://", "https://");
+            finalUrl = inputURL.replace("http://educationfoundation.space", "https://spaceceindiafoundation.infinityfreeapp.com")
+                    .replace("http://spacefoundation.in", "https://spaceceindiafoundation.infinityfreeapp.com")
+                    .replace("http://", "https://");
         }
 
         Log.d("UsefulFunctions", "Requesting: " + finalUrl);
         JSONObject jsonObject = null;
 
+//        Request request = new Request.Builder()
+//                .url(finalUrl)
+//                .build();
         Request request = new Request.Builder()
                 .url(finalUrl)
+                .addHeader("Accept", "application/json")
+                .addHeader("X-Requested-With", "XMLHttpRequest")
+                .addHeader("User-Agent", "Mozilla/5.0")
                 .build();
 
         try (Response response = getOkHttpClient().newCall(request).execute()) {

@@ -137,7 +137,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void logIn(String email, String password) {
-        String login = "https://hustle-7c68d043.mileswebhosting.com/spacece/spacece_auth/login_action.php";
+//        String login = "https://hustle-7c68d043.mileswebhosting.com/spacece/spacece_auth/login_action.php";
+        String login = "https://spaceceindiafoundation.infinityfreeapp.com/spacece_auth/login_action.php";
+        new Thread(() -> {
+            UsefulFunctions.warmUpCookie("https://spaceceindiafoundation.infinityfreeapp.com/spacece_auth/login_action.php");
+
+            // ... rest of your login code
+
         OkHttpClient client = UsefulFunctions.getOkHttpClient();
         RequestBody fromBody = new FormBody.Builder()
                 .add("email", email)
@@ -145,9 +151,16 @@ public class LoginActivity extends AppCompatActivity {
                 .add("type", USER)
                 .add("isAPI", "true")
                 .build();
+//        Request request = new Request.Builder()
+//                .url(login)
+//                .post(fromBody)
+//                .build();
         Request request = new Request.Builder()
                 .url(login)
                 .post(fromBody)
+                .addHeader("Accept", "application/json")
+                .addHeader("X-Requested-With", "XMLHttpRequest")  // key header
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .build();
         
         client.newCall(request).enqueue(new Callback() {
@@ -218,5 +231,6 @@ public class LoginActivity extends AppCompatActivity {
                 });
             }
         });
+        }).start();
     }
 }
